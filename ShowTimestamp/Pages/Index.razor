@@ -1,41 +1,47 @@
 ﻿@page "/"
+@inject IJSRuntime JsRuntime
 
 <PageTitle>@Title</PageTitle>
 
-<div class="p-4 vh-90">
-    <div class="d-flex flex-column flex-grow-1 h-100 justify-content-center">
-        <div class="mx-auto">
-            <div class="mx-1 mt-1">
-                <label class="col-form-label col-form-label-sm">Left text</label>
-                <input @bind-value="LeftText" class="form-control form-control-sm" type="text" placeholder="Left text">
-            </div>
-            <div class="d-flex justify-content-center">
+@if (_showSettings)
+{
+    <div class="p-4 vh-90">
+        <div class="d-flex flex-column flex-grow-1 h-100 justify-content-center">
+            <div class="mx-auto">
                 <div class="mx-1 mt-1">
-                    <label class="col-form-label col-form-label-sm">Hours</label>
-                    <input @bind-value="Hours" class="form-control form-control-sm" type="text" placeholder="Hours">
+                    <label class="col-form-label col-form-label-sm">Left text</label>
+                    <input @bind-value="LeftText" class="form-control form-control-sm" type="text" placeholder="Left text">
+                </div>
+                <div class="d-flex justify-content-center">
+                    <div class="mx-1 mt-1">
+                        <label class="col-form-label col-form-label-sm">Hours</label>
+                        <input @bind-value="Hours" class="form-control form-control-sm" type="text" placeholder="Hours">
+                    </div>
+                    <div class="mx-1 mt-1">
+                        <label class="col-form-label col-form-label-sm">Minutes</label>
+                        <input @bind-value="Minutes" class="form-control form-control-sm" type="text" placeholder="Minutes">
+                    </div>
+                    <div class="mx-1 mt-1">
+                        <label class="col-form-label col-form-label-sm">Seconds</label>
+                        <input @bind-value="Seconds" class="form-control form-control-sm" type="text" placeholder="Seconds">
+                    </div>
                 </div>
                 <div class="mx-1 mt-1">
-                    <label class="col-form-label col-form-label-sm">Minutes</label>
-                    <input @bind-value="Minutes" class="form-control form-control-sm" type="text" placeholder="Minutes">
+                    <label class="col-form-label col-form-label-sm">Right text</label>
+                    <input @bind-value="RightText" class="form-control form-control-sm" type="text" placeholder="Right text">
                 </div>
-                <div class="mx-1 mt-1">
-                    <label class="col-form-label col-form-label-sm">Seconds</label>
-                    <input @bind-value="Seconds" class="form-control form-control-sm" type="text" placeholder="Seconds">
+                <div class="mx-1 mt-4 pt-1 w-100">
+                    <button @onclick="OnUpdate" type="button" class="btn btn-success w-100">Update</button>
                 </div>
-            </div>
-            <div class="mx-1 mt-1">
-                <label class="col-form-label col-form-label-sm">Right text</label>
-                <input @bind-value="RightText" class="form-control form-control-sm" type="text" placeholder="Right text">
-            </div>
-            <div class="mx-1 mt-4 pt-1 w-100">
-                <button @onclick="OnUpdate" type="button" class="btn btn-success w-100">Update</button>
             </div>
         </div>
     </div>
-</div>
+}
 
 @code {
+    private bool _showSettings = true;
     private DateTimeOffset? _startTimestamp = null;
+
     public string Title { get; set; } = "Show Timestamp";
     public string LeftText { get; set; }
     public string Hours { get; set; }
@@ -61,10 +67,20 @@
         while (true)
         {
             await Task.Delay(100);
-            
+
             if (_startTimestamp == null)
             {
                 continue;
+            }
+
+            _showSettings = await JsRuntime.InvokeAsync<int>("getHeight") > 50;
+            if (_showSettings)
+            {
+                await JsRuntime.InvokeVoidAsync("setWhiteBody");
+            }
+            else
+            {
+                await JsRuntime.InvokeVoidAsync("setBlackBody");
             }
 
             var difference = (DateTimeOffset.UtcNow - _startTimestamp).Value;

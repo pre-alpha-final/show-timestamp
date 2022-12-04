@@ -1,10 +1,10 @@
 {
-  "name": "ShowTimestamp",
-  "short_name": "ShowTimestamp",
+  "name": "ST",
+  "short_name": "ST",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#03173d",
+  "theme_color": "#000000",
   "prefer_related_applications": false,
   "icons": [
     {
