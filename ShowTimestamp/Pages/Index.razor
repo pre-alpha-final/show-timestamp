@@ -84,7 +84,7 @@
             }
 
             var difference = (DateTimeOffset.UtcNow - _startTimestamp).Value;
-            Title = $"{LeftText} {difference.Hours}:{difference.Minutes}:{difference.Seconds} {RightText}";
+            Title = $"{LeftText} {(((int)difference.TotalHours).ToString("D2"))} : {difference.Minutes:D2} : {difference.Seconds:D2} {RightText}";
             StateHasChanged();
         }
     }
